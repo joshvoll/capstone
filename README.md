@@ -8,14 +8,14 @@ This application will allow creating/removing/updating/fetching Routine items fo
 
 # Routine items
 
-The application should store TODO items, and each TODO item contains the following fields:
+The application should store Routine items, and each Routine item contains the following fields:
 
 * `routineId` (string) - a unique id for an item
 * `createdAt` (string) - date and time when an item was created
 * `name` (string) - name of a Routine item (e.g. "Change a light bulb")
 * `dueDate` (string) - date and time by which an item should be completed
 * `done` (boolean) - true if an item was completed, false otherwise
-* `attachmentUrl` (string) (optional) - a URL pointing to an image attached to a TODO item
+* `attachmentUrl` (string) (optional) - a URL pointing to an image attached to a Routine item
 
 You might also store an id of a user who created a Routine item.
 
@@ -72,7 +72,7 @@ It should return a new Routine item that looks like this:
 ```json
 {
   "item": {
-    "todoId": "123",
+    "routineId": "123",
     "createdAt": "2019-07-27T20:01:45.424Z",
     "name": "Buy milk",
     "dueDate": "2019-07-29T20:01:45.424Z",
@@ -183,7 +183,7 @@ npm install
 npm run start
 ```
 
-This should start a development server with the React application that will interact with the serverless TODO application.
+This should start a development server with the React application that will interact with the serverless Routine application.
 
 # Postman collection
 
