@@ -1,11 +1,11 @@
 import { apiEndpoint } from '../config'
-import { Todo } from '../types/Todo';
-import { CreateTodoRequest } from '../types/CreateTodoRequest';
+import { Routine } from '../types/Routine';
+import { CreateRoutineRequest } from '../types/CreateRoutineRequest';
 import Axios from 'axios'
-import { UpdateTodoRequest } from '../types/UpdateTodoRequest';
+import { UpdateRoutineRequest } from '../types/UpdateRoutineRequest';
 
-export async function getTodos(idToken: string): Promise<Todo[]> {
-  console.log('Fetching todos')
+export async function getRoutines(idToken: string): Promise<Routine[]> {
+  console.log('Fetching routine')
 
   const response = await Axios.get(`${apiEndpoint}/routines`, {
     headers: {
@@ -13,15 +13,15 @@ export async function getTodos(idToken: string): Promise<Todo[]> {
       'Authorization': `Bearer ${idToken}`
     },
   })
-  console.log('Todos:', response.data.items)
+  console.log('Routines:', response.data.items)
   return response.data.items
 }
 
-export async function createTodo(
+export async function createRoutine(
   idToken: string,
-  newTodo: CreateTodoRequest
-): Promise<Todo> {
-  const response = await Axios.post(`${apiEndpoint}/routines`,  JSON.stringify(newTodo), {
+  newRoutine: CreateRoutineRequest
+): Promise<Routine> {
+  const response = await Axios.post(`${apiEndpoint}/routines`,  JSON.stringify(newRoutine), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -30,12 +30,12 @@ export async function createTodo(
   return response.data.item
 }
 
-export async function patchTodo(
+export async function patchRoutine(
   idToken: string,
   routineId: string,
-  updatedTodo: UpdateTodoRequest
+  updatedRoutine: UpdateRoutineRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/routines/${routineId}`, JSON.stringify(updatedTodo), {
+  await Axios.patch(`${apiEndpoint}/routines/${routineId}`, JSON.stringify(updatedRoutine), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -43,12 +43,12 @@ export async function patchTodo(
   })
 }
 
-export async function deleteTodo(
+export async function deleteRoutine(
   idToken: string,
   routineId: string
 ): Promise<void> {
-  console.log("TODO ID = ", idToken)
-  console.log("TODO ID = ", routineId)
+  console.log("TOOKEN ID = ", idToken)
+  console.log("ROUTINE ID = ", routineId)
   console.log("Endpoint = ", apiEndpoint+"/"+routineId)
   await Axios.delete(`${apiEndpoint}/routines/${routineId}`, {
     headers: {

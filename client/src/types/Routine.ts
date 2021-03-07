@@ -1,4 +1,4 @@
-export interface Todo {
+export interface Routine {
   routineId: string
   createdAt: string
   name: string

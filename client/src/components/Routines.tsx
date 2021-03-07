@@ -14,106 +14,106 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createRoutine, deleteRoutine, getRoutines, patchRoutine } from '../api/routines-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Routine } from '../types/Routine'
 
-interface TodosProps {
+interface RoutinesProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
-  newTodoName: string
-  loadingTodos: boolean
+interface RoutinesState {
+  routines: Routine[]
+  newRoutineName: string
+  loadingRoutines: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
-    newTodoName: '',
-    loadingTodos: true
+export class Routines extends React.PureComponent<RoutinesProps, RoutinesState> {
+  state: RoutinesState = {
+    routines: [],
+    newRoutineName: '',
+    loadingRoutines: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodoName: event.target.value })
+    this.setState({ newRoutineName: event.target.value })
   }
 
   onEditButtonClick = (routineId: string) => {
-    this.props.history.push(`/todos/${routineId}/edit`)
+    this.props.history.push(`/routines/${routineId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onRoutineCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
       const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
+      const newRoutine = await createRoutine(this.props.auth.getIdToken(), {
+        name: this.state.newRoutineName,
         dueDate
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        routines: [...this.state.routines, newRoutine],
+        newRoutineName: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('Routine creation failed')
     }
   }
 
-  onTodoDelete = async (routineId: string) => {
+  onRoutineDelete = async (routineId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), routineId)
+      await deleteRoutine(this.props.auth.getIdToken(), routineId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.routineId != routineId)
+        routines: this.state.routines.filter(routine => routine.routineId != routineId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Routine deletion failed')
     }
   }
 
-  onTodoCheck = async (pos: number) => {
+  onRoutineCheck = async (pos: number) => {
     try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.routineId, {
-        name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done
+      const routine = this.state.routines[pos]
+      await patchRoutine(this.props.auth.getIdToken(), routine.routineId, {
+        name: routine.name,
+        dueDate: routine.dueDate,
+        done: !routine.done
       })
       this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+        routines: update(this.state.routines, {
+          [pos]: { done: { $set: !routine.done } }
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Routine deletion failed')
     }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const routines = await getRoutines(this.props.auth.getIdToken())
       this.setState({
-        todos,
-        loadingTodos: false
+        routines,
+        loadingRoutines: false
       })
     } catch (e) {
-      alert(`Failed to fetch todos: ${e.message}`)
+      alert(`Failed to fetch routines: ${e.message}`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Routines</Header>
 
-        {this.renderCreateTodoInput()}
+        {this.renderCreateRoutineInput()}
 
-        {this.renderTodos()}
+        {this.renderRoutines()}
       </div>
     )
   }
 
-  renderCreateTodoInput() {
+  renderCreateRoutineInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -123,7 +123,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               labelPosition: 'left',
               icon: 'add',
               content: 'New task',
-              onClick: this.onTodoCreate
+              onClick: this.onRoutineCreate
             }}
             fluid
             actionPosition="left"
@@ -138,47 +138,47 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  renderTodos() {
-    if (this.state.loadingTodos) {
+  renderRoutines() {
+    if (this.state.loadingRoutines) {
       return this.renderLoading()
     }
 
-    return this.renderTodosList()
+    return this.renderRoutinesList()
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading Routines
         </Loader>
       </Grid.Row>
     )
   }
 
-  renderTodosList() {
+  renderRoutinesList() {
     return (
       <Grid padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.routines.map((routine, pos) => {
           return (
-            <Grid.Row key={todo.routineId}>
+            <Grid.Row key={routine.routineId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  onChange={() => this.onRoutineCheck(pos)}
+                  checked={routine.done}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {routine.name}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {routine.dueDate}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.routineId)}
+                  onClick={() => this.onEditButtonClick(routine.routineId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -187,13 +187,13 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.routineId)}
+                  onClick={() => this.onRoutineDelete(routine.routineId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              {routine.attachmentUrl && (
+                <Image src={routine.attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />
