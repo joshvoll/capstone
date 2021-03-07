@@ -2,7 +2,7 @@
 import { RoutineItem } from '../models/routineItem'
 import { RoutinesAccess } from '../dataLayer/routinesAccess'
 import { CreateRoutineRequest } from '../requests/CreateRoutineRequest'
-// import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { UpdateRoutineRequest } from '../requests/UpdateRoutineRequest'
 // import { createLogger } from '../utils/logger'
 
 //const logger = createLogger('auth')
@@ -19,6 +19,11 @@ export async function getRoutines(userId: string): Promise<RoutineItem[]> {
 // createRoutine interface method
 export async function createRoutine(createRoutineRequest: CreateRoutineRequest,userId: string): Promise<RoutineItem> {
 	return await routinesAccess.createRoutine(createRoutineRequest, userId)
+}
+
+// updateRoutine is the interface method 
+export async function updateRoutine(updatedRoutine:UpdateRoutineRequest,routineId:string, userId:string){
+	return await routinesAccess.updateRoutine(updatedRoutine, routineId, userId)
 }
 
 

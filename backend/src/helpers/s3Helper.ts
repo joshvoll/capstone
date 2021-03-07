@@ -15,17 +15,17 @@ export class S3Helper{
     ){
         
     }
-    async getTodoAttachmentUrl(todoId: string): Promise<string>{
+    async getRoutineAttachmentUrl(routineId: string): Promise<string>{
         
         try{
             await this.s3.headObject({
             Bucket: process.env.IMAGES_BUCKET,
-            Key: `${todoId}.png` 
+            Key: `${routineId}.png` 
         }).promise();
         
         return  this.s3.getSignedUrl('getObject', {
             Bucket: process.env.IMAGES_BUCKET,
-            Key: `${todoId}.png`,
+            Key: `${routineId}.png`,
             Expires: this.signedUrlExpireSeconds
             });
         }catch(err){
@@ -34,10 +34,10 @@ export class S3Helper{
         return null
     }
 
-    getPresignedUrl(todoId: string): string{
+    getPresignedUrl(routineId: string): string{
         return this.s3.getSignedUrl('putObject', {
             Bucket: process.env.IMAGES_BUCKET,
-            Key: `${todoId}.png`,
+            Key: `${routineId}.png`,
             Expires: this.signedUrlExpireSeconds
           }) as string ;
     }

@@ -1,12 +1,12 @@
 import { RoutineItem } from '../models/RoutineItem';
 import { CreateRoutineRequest } from '../requests/CreateRoutineRequest';
-// import { UpdateRoutineRequest } from '../requests/UpdateRoutineRequest';
-// import { createLogger } from '../utils/logger'
+import { UpdateRoutineRequest } from '../requests/UpdateRoutineRequest';
+import { createLogger } from '../log/log'
 const uuid = require('uuid/v4')
 import * as AWS from 'aws-sdk'
 const AWSXRay = require('aws-xray-sdk');
 const XAWS = AWSXRay.captureAWS(AWS)
-// const logger = createLogger('todosDataAccess');
+const logger = createLogger('routinesDataAccess');
 
 
 export class RoutinesAccess{
@@ -45,6 +45,27 @@ export class RoutinesAccess{
 
         return item
     }
+    // updateRoutine from user
+    async updateRoutine(updatedRoutine:UpdateRoutineRequest,routineId:string, userId:string){
+	logger.info(`Updating a todo routineid = ${routineId} `);
+	logger.info(`Updating a todo user = ${userId} `);
+        await this.docClient.update({
+            TableName: this.routinesTable,
+            Key:{
+                routineId: routineId,
+		userId: userId
+            },
+            UpdateExpression: 'set #namefield = :n, dueDate = :d, done = :done',
+            ExpressionAttributeValues: {
+                ':n' : updatedRoutine.name,
+                ':d' : updatedRoutine.dueDate,
+                ':done' : updatedRoutine.done
+            },
+            ExpressionAttributeNames:{
+                "#namefield": "name"
+              }
+          }).promise()
+    }    
     // deleteRoutine from user
     async deleteRoutine(userId:string, routineId:string) {
        await this.docClient.delete({

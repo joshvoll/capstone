@@ -19,8 +19,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
    // const result = await new TodosAccess().getUserTodos(userId)
     const result = await getRoutines(userId)  
     for(const record of result){
-        record.attachmentUrl = await s3Helper.getTodoAttachmentUrl(record.routineId)
+        record.attachmentUrl = await s3Helper.getRoutineAttachmentUrl(record.routineId)
     }
-
+    logger.info(`restuls ${result}`)
     return apiResponseHelper.generateDataSuccessResponse(200,'items',result)
 }
